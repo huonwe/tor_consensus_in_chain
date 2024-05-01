@@ -22,25 +22,15 @@ use std::str::FromStr;
 // use encoding_rs::WINDOWS_1252;
 // use encoding_rs_io::DecodeReaderBytesBuilder;
 use parity_scale_codec::{Compact, Encode};
-use serde::{Deserialize, Serialize};
 use sp_core::{blake2_256, H256};
 use sp_keyring::AccountKeyring;
 use sp_runtime::{generic::Era, MultiAddress, MultiSignature};
 use sp_version::RuntimeVersion;
 // @@@
 
-// #[derive(Serialize, Deserialize)]
-// struct Headers {
-//     connection: String,
-//     date: String,
-//     expires: String,
-//     content_type: String,
-// }
 
 #[get("/")]
 async fn hello() -> impl Responder {
-	let client = reqwest::Client::new();
-
 	// See https://www.jsonrpc.org/specification for more information on
 	// the JSON RPC 2.0 format that we use here to talk to nodes.
 	let res = rpc_to_localhost("state_getMetadata", ()).await.unwrap();
@@ -66,14 +56,6 @@ async fn update() -> impl Responder {
 	// the account that operate used
 	let from = AccountKeyring::Alice.to_account_id();
 	let alice_nonce = get_nonce(&from).await;
-
-	// let user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.31";
-	// let accept = "Accept: */*";
-	// let accept_encoding = "Accept-Encoding: gzip, deflate, br";
-	// let connection = "Connection: keep-alive";
-	// let content_type = "Content-Type: application/json; charset=UTF-8";
-	// let client = reqwest::Client::builder().deflate(true).build().unwrap();
-
 	// get tor consensus
 	let res = reqwest::get("http://localhost:7000/tor/status-vote/current/consensus.z")
 		.await
@@ -155,10 +137,7 @@ async fn update() -> impl Responder {
 	HttpResponse::Ok().body(text)
 }
 
-#[get("/show")]
-async fn show() -> impl Responder {
-	HttpResponse::Ok().body("sss")
-}
+
 fn main() -> sc_cli::Result<()> {
 	let srv = HttpServer::new(|| {
 		App::new()
@@ -182,7 +161,7 @@ fn main() -> sc_cli::Result<()> {
 	command::run()?;
 	println!("after command::run()");
 	t1.join();
-	println!("!!!");
+	println!("Server exited");
 	// let srv_handle = srv.handle();
 
 	Ok(())
