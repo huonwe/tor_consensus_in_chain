@@ -4,7 +4,9 @@
 # 使用方法
 ```bash
 cd tor_consensus_in_chain
+# to compile
 cargo build --release
+# run the program
 ./target/release/solochian-template-node
 # get tor consensus
 curl http://localhost:8080/update
